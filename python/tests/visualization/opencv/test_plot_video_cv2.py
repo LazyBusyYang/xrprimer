@@ -124,6 +124,16 @@ def test_background_args():
         mframe_point_data=mframe_point_data,
         point_palette=point_palette,
         background_video=video_path)
+    # test background_img_list
+    output_path = os.path.join(output_dir, 'background_img_list.mp4')
+    img_path_list = [
+        os.path.join(img_dir, file_name) for file_name in os.listdir(img_dir)
+    ]
+    plot_video(
+        output_path=output_path,
+        mframe_point_data=mframe_point_data,
+        point_palette=point_palette,
+        background_img_list=img_path_list)
     # test resolution
     output_path = os.path.join(output_dir, 'background_args_resolution.mp4')
     plot_video(

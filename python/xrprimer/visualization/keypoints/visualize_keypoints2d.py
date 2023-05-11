@@ -1,5 +1,5 @@
 # yapf: disable
-from typing import Union
+from typing import List, Union
 
 import numpy as np
 
@@ -23,8 +23,9 @@ def visualize_keypoints2d(
     plot_lines: bool = True,
     # background args
     background_arr: Union[np.ndarray, None] = None,
-    background_dir: Union[np.ndarray, None] = None,
-    background_video: Union[np.ndarray, None] = None,
+    background_dir: Union[str, None] = None,
+    background_video: Union[str, None] = None,
+    background_img_list: Union[List[str], None] = None,
     height: Union[int, None] = None,
     width: Union[int, None] = None,
     # verbose args
@@ -58,11 +59,14 @@ def visualize_keypoints2d(
             limbs. Defaults to True.
         background_arr (Union[np.ndarray, None], optional):
             Background image array. Defaults to None.
-        background_dir (Union[np.ndarray, None], optional):
+        background_dir (Union[str, None], optional):
             Path to the image directory for background.
             Defaults to None.
-        background_video (Union[np.ndarray, None], optional):
+        background_video (Union[str, None], optional):
             Path to the video for background.
+            Defaults to None.
+        background_img_list (Union[List[str], None], optional):
+            List of paths to images for background.
             Defaults to None.
         height (Union[int, None], optional):
             Height of background. Defaults to None.
@@ -190,6 +194,7 @@ def visualize_keypoints2d(
         background_arr=background_arr,
         background_dir=background_dir,
         background_video=background_video,
+        background_img_list=background_img_list,
         height=height,
         width=width,
         disable_tqdm=disable_tqdm,

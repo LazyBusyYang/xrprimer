@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import List, Union
 
 import cv2
 import numpy as np
@@ -35,8 +35,9 @@ def plot_video(
     line_palette: Union[LinePalette, None] = None,
     # background args
     background_arr: Union[np.ndarray, None] = None,
-    background_dir: Union[np.ndarray, None] = None,
-    background_video: Union[np.ndarray, None] = None,
+    background_dir: Union[str, None] = None,
+    background_video: Union[str, None] = None,
+    background_img_list: Union[List[str], None] = None,
     height: Union[int, None] = None,
     width: Union[int, None] = None,
     # verbose args
@@ -90,11 +91,14 @@ def plot_video(
             Defaults to None, do not plot lines.
         background_arr (Union[np.ndarray, None], optional):
             Background image array. Defaults to None.
-        background_dir (Union[np.ndarray, None], optional):
+        background_dir (Union[str, None], optional):
             Path to the image directory for background.
             Defaults to None.
-        background_video (Union[np.ndarray, None], optional):
+        background_video (Union[str, None], optional):
             Path to the video for background.
+            Defaults to None.
+        background_img_list (Union[List[str], None], optional):
+            List of paths to images for background.
             Defaults to None.
         height (Union[int, None], optional):
             Height of background. Defaults to None.
@@ -122,6 +126,7 @@ def plot_video(
         background_arr=background_arr,
         background_dir=background_dir,
         background_video=background_video,
+        background_img_list=background_img_list,
         height=height,
         width=width,
         logger=logger)
@@ -133,7 +138,7 @@ def plot_video(
     # check if data matches background
     data_to_check = [
         mframe_point_data, mframe_line_data, background_arr, background_dir,
-        background_video
+        background_video, background_img_list
     ]
     data_len = check_data_len(data_list=data_to_check, logger=logger)
     # init some var
@@ -181,6 +186,8 @@ def plot_video(
                     logger=logger
                 )
             background_sframe = video_reader.get_next_frame()
+        elif background_img_list is not None:
+            background_sframe = cv2.imread(background_img_list[frame_idx])
         else:
             background_sframe = np.zeros(
                 shape=(height, width, 3), dtype=np.uint8)
@@ -229,13 +236,14 @@ def plot_video(
 
 
 def _check_background_src(background_arr: Union[np.ndarray, None],
-                          background_dir: Union[np.ndarray, None],
-                          background_video: Union[str,
-                                                  None], height: Union[int,
-                                                                       None],
-                          width: Union[int,
-                                       None], logger: logging.Logger) -> int:
-    candidates = [background_arr, background_dir, background_video]
+                          background_dir: Union[str, None],
+                          background_video: Union[str, None],
+                          background_img_list: Union[List[str], None],
+                          height: Union[int, None], width: Union[int, None],
+                          logger: logging.Logger) -> int:
+    candidates = [
+        background_arr, background_dir, background_video, background_img_list
+    ]
     not_none_count = 0
     for candidate in candidates:
         if candidate is not None:
@@ -245,6 +253,7 @@ def _check_background_src(background_arr: Union[np.ndarray, None],
     if not_none_count != 1:
         logger.error('Please pass only one background source' +
                      ' among background_arr, background_dir,' +
-                     ' background_video and height+width.')
+                     ' background_video background_img_list,' +
+                     ' and height+width.')
         raise ValueError
     return 0
